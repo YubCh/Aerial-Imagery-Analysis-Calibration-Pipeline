@@ -1,6 +1,9 @@
 import cv2 as cv
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import math
 from pathlib import Path
 from src.s1_datascan.scan import scan_dataset
@@ -44,6 +47,16 @@ def build_stats_table(image_paths):
       print(f"processed {100 * (i / len(image_paths))} %")
   return pd.DataFrame(rows)
 
+def plot_distributions(df):
+  for column in ['brightness', 'contrast','blur_score']:
+    plt.figure()
+    df[column].hist(bins=50)
+    plt.title(f"Distribution of {column} across dataset")
+    plt.xlabel(column)
+    plt.ylabel("number of images")
+    plt.savefig(f"docs/distribution_{column}.png")
+    plt.close()
+    print(f"saved")
 
 
 if __name__ == "__main__":
@@ -51,6 +64,7 @@ if __name__ == "__main__":
   df = build_stats_table(paths)
   df.to_csv('docs/image_stats.csv', index=False)
   print(df.describe())
+  plot_distributions(df)
   
   # img = cv.imread('data/VisDrone2019-DET-train/images/0000008_00889_d_0000039.jpg')
   # gray = to_grayscale(img)
