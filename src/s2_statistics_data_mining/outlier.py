@@ -1,7 +1,7 @@
 import pandas as pd
-import numpy as np
 from sklearn.ensemble import IsolationForest
-
+import shutil
+from pathlib import Path
 
 
 def zscore(df, columns):
@@ -40,18 +40,28 @@ def isolation_forest_outliers(df, columns, contamination = 0.01):
     'score': scores[prediction == -1]
   })
 
-
+ 
+def export_outlier_head(outliers, n=10):
+  out_dir = Path("docs/outlier_samples")
+  out_dir.mkdir(exist_ok=True)
+  src_dir = Path("data/VisDrone2019-DET-train/images")
+  for filename in outliers['filename'].head(n):
+    shutil.copy(src_dir / filename, out_dir / filename)
+  print('saved outliers at ', out_dir)
 
 if __name__ == "__main__":
     df = pd.read_csv("docs/image_stats.csv")
     columns = ["brightness", "contrast", "blur_score"]
-
-    df = zscore(df, columns)
+    print("sdf")
+  
+    df =  zscore(df, columns)
     z_flags = zscore_outliers(df, columns)
-    print(f"z-score outliers: {len(z_flags)}")
+    
     print(z_flags.head())
 
 
-    print(isolation_forest_outliers(df, columns).head())
+    if_flags = isolation_forest_outliers(df, columns)
+   
+    print(if_flags.head())
 
-  
+    export_outlier_head(if_flags)
