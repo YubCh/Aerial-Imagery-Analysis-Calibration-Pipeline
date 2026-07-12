@@ -52,16 +52,9 @@ def export_outlier_head(outliers, n=10):
 if __name__ == "__main__":
     df = pd.read_csv("docs/image_stats.csv")
     columns = ["brightness", "contrast", "blur_score"]
-    print("sdf")
+ 
   
     df =  zscore(df, columns)
-    z_flags = zscore_outliers(df, columns)
-    
-    print(z_flags.head())
-
-
-    if_flags = isolation_forest_outliers(df, columns)
-   
-    print(if_flags.head())
-
-    export_outlier_head(if_flags)
+    all_flags = pd.concat([zscore_outliers(df, columns), isolation_forest_outliers(df, columns)])
+    all_flags.to_csv("docs/outliers.csv", index=False)
+    print(f"total flags saved: {len(all_flags)}")
