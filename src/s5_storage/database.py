@@ -69,4 +69,6 @@ def stats_outliers_csv_to_database(stats_csv_path="docs/image_stats.csv",      o
 
 
   def run_example_queries():
-    
+    with engine.begin() as connection:
+      blurry_images = connection.execute("SELECT i.filename, s.blur_score FROM stats s JOIN images i ON i.id == s.image_id ...")
+      #TODO finish some example queries
