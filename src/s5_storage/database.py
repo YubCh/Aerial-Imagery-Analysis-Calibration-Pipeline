@@ -33,7 +33,7 @@ def create_all_tables():
 
 
 
-def stats_csv_to_database(stats_csv_path="docs/image_stats.csv",           outliers_csv_path = "docs/outliers.csv"):
+def stats_outliers_csv_to_database(stats_csv_path="docs/image_stats.csv",           outliers_csv_path = "docs/outliers.csv"):
   df_stats = pd.read_csv(stats_csv_path)
   df_outliers = pd.read_csv(outliers_csv_path)
   filename_to_id = {}
