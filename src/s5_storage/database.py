@@ -1,7 +1,7 @@
 from sqlalchemy import Table, Column, create_engine, Table, Integer, Float, Text, ForeignKey, MetaData
 import pandas as pd
 
-engine = create_engine("sqllite:///pipeline.db")
+engine = create_engine("sqlite:///pipeline.db")
 metadata = MetaData()
 
 images = Table(
@@ -33,7 +33,7 @@ def create_all_tables():
 
 
 
-def stats_outliers_csv_to_database(stats_csv_path="docs/image_stats.csv",           outliers_csv_path = "docs/outliers.csv"):
+def stats_outliers_csv_to_database(stats_csv_path="docs/image_stats.csv",      outliers_csv_path = "docs/outliers.csv"):
   df_stats = pd.read_csv(stats_csv_path)
   df_outliers = pd.read_csv(outliers_csv_path)
   filename_to_id = {}
@@ -64,3 +64,9 @@ def stats_outliers_csv_to_database(stats_csv_path="docs/image_stats.csv",       
       
   print(f"ingested {len(df_stats)} stats")
   print(f"ingested {len(df_outliers)} outliers")
+
+
+
+
+  def run_example_queries():
+    

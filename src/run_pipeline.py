@@ -30,7 +30,7 @@ def pipeline():
 
   print("ingest to Database")
   create_all_tables()
-  stats_outliers_csv_to_database
+  stats_outliers_csv_to_database()
 
 if __name__ == "__main__":
   pipeline()
