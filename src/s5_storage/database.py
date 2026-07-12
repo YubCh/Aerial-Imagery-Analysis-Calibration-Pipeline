@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, create_engine, Table, Integer, Float, Text, ForeignKey, MetaData
+from sqlalchemy import Table, Column, create_engine, Table, Integer, Float, Text, ForeignKey, MetaData, text
 import pandas as pd
 
 engine = create_engine("sqlite:///pipeline.db")
@@ -69,6 +69,21 @@ def stats_outliers_csv_to_database(stats_csv_path="docs/image_stats.csv",      o
 
 
   def run_example_queries():
-    with engine.begin() as connection:
-      blurry_images = connection.execute("SELECT i.filename, s.blur_score FROM stats s JOIN images i ON i.id == s.image_id ...")
-      #TODO finish some example queries
+    with engine.connec() as connection:
+      blurry_images = connection.execute(text("""
+        SELECT i.filename, s.blur_score
+        FROM stats s
+        JOIN images i ON i.id = s.image_id
+        ORDER BY s.blur_score
+        LIMIT 10
+    """))
+      for row in blurry_images:
+        print(row)
+
+      outlier_method_count = connection.execute(text("""
+        SELECT COUNT(o.method)
+        FROM outliers o
+        GROUP BY o.method
+"""))
+      for row in outlier_method_count:
+        print(row)
