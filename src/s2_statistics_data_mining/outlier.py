@@ -35,7 +35,7 @@ def isolation_forest_outliers(df, columns, contamination = 0.01):
 
   return pd.DataFrame({
     'filename': outliers['filename'],
-    'method': 'IsolationForest',
+    'method': 'isolation_forest',
     'metric': 'multivariate',
     'score': scores[prediction == -1]
   })
