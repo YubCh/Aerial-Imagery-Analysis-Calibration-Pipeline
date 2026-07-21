@@ -96,7 +96,7 @@ def run_example_queries():
       print(row)
 
     zscore_ironforest_outlier = connection.execute(text("""
-      SELECT i.filename
+      SELECT DISTINCT i.filename
       FROM images i
       WHERE i.id IN (SELECT image_id FROM outliers WHERE method = 'zscore')
         AND i.id IN (SELECT image_id FROM outliers WHERE method = 'isolation_forest')
