@@ -68,29 +68,38 @@ def stats_outliers_csv_to_database(stats_csv_path="docs/image_stats.csv",      o
 
 
 
-  def run_example_queries():
-    with engine.connect() as connection:
-      blurry_images = connection.execute(text("""
-        SELECT i.filename, s.blur_score
-        FROM stats s
-        JOIN images i ON i.id = s.image_id
-        ORDER BY s.blur_score
-        LIMIT 10
-    """))
-      for row in blurry_images:
-        print(row)
+def run_example_queries():
+  with engine.connect() as connection:
+    blurry_images = connection.execute(text("""
+      SELECT i.filename, s.blur_score
+      FROM stats s
+      JOIN images i ON i.id = s.image_id
+      ORDER BY s.blur_score
+      LIMIT 10
+  """))
+    for row in blurry_images:
+      print(row)
 
-      outlier_method_count = connection.execute(text("""
-        SELECT COUNT(o.method)
-        FROM outliers o
-        GROUP BY o.method
+    outlier_method_count = connection.execute(text("""
+      SELECT COUNT(o.method)
+      FROM outliers o
+      GROUP BY o.method
 """))
-      for row in outlier_method_count:
-        print(row)
+    for row in outlier_method_count:
+      print(row)
 
-      average_brightness = connection.execute(text("""
-        SELECT AVG(s.brightness)
-        FROM stats s
+    average_brightness = connection.execute(text("""
+      SELECT AVG(s.brightness)
+      FROM stats s
 """))
-      for row in average_brightness:
-        print(row)
+    for row in average_brightness:
+      print(row)
+
+    zscore_ironforest_outlier = connection.execute(text("""
+      SELECT i.filename
+      FROM images i
+      WHERE i.id IN (SELECT image_id FROM outliers WHERE method = 'zscore')
+        AND i.id IN (SELECT image_id FROM outliers WHERE method = 'isolation_forest')
+"""))
+    for row in zscore_ironforest_outlier:
+      print(row)
