@@ -1,8 +1,10 @@
 import cv2
+import pandas as pd
 import numpy as np
 import torch
 import torchvision.models as models
 import torchvision.transforms as transforms
+from src.s1_datascan.scan import scan_dataset
 
 
 device = "mps" if torch.backends.mps.is_available else "cpu"
@@ -34,8 +36,24 @@ def extract_embedding(model, img_cv):
   return embedding.squeeze().cpu().numpy()
 
 
+ 
+
+def build_all_embeddings(image_paths, model):
+  res = []
+  filenames = []
+  for i,picture in enumerate(image_paths):
+    img_cv = cv2.imread(str(picture))     
+    emb = extract_embedding(model, img_cv)
+    res.append(emb)
+    filenames.append(picture.name)
+  embeddings = np.stack(res)
+  np.save("docs/embeddings.npy", embeddings)
+  pd.DataFrame({"filename": filenames}).to_csv("docs/embedding_filenames.csv", index=False)
+  return embeddings
+
+
 if __name__ == "__main__":
   model = load_model()
-  img = cv2.imread("/Users/sherry/Dev/GitProjects/Aerial-Imagery-Analysis-Calibration-Pipeline/docs/sample_image.jpg")
-  emb = extract_embedding(model, img)
-  print(emb.shape)
+  paths = scan_dataset()    
+  build_all_embeddings(paths, model)
+ 
