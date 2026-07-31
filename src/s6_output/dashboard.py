@@ -41,13 +41,24 @@ with engine.connect() as conn:
     JOIN images i ON i.id == s.image_id
     WHERE i.filename = :files"""), {"files": selected}).fetchone()
 
-
-
 st.write("Brightness:", round(result[0], 2))
 st.write("Contrast:", round(result[1], 2))
 st.write("Blur-score:", round(result[2], 2))
+with engine.connect() as conn:
+  outlier_rows = conn.execute(text("""
+    SELECT o.method, o.metric, o.score
+    FROM outliers o
+    JOIN images i ON i.id = o.image_id
+    WHERE i.filename =:files
+"""), {"files": selected}).fetchall()
 
-
+  if outlier_rows:
+    st.write("Flagged as outlier by:")
+    for method, metric, score in outlier_rows:
+      st.write(f" -{method} ({metric}), score {score:.2f}")
+  else:
+    st.write("Not flagged as outlier")
+  st.write("Outlier example: 0000040_02454_d_0000068.jpg ")
 
 st.header("Find similar images")
 
@@ -55,10 +66,12 @@ embeddings = np.load("docs/embeddings.npy")
 emb_filenames = pd.read_csv("docs/embedding_filenames.csv")["filename"].tolist()
 
 embs_index = emb_filenames.index(selected)
-similar = find_similar(embs_index, embeddings,emb_filenames, 5)
+similar = find_similar(embs_index, embeddings,emb_filenames, 6)
+
 
 st.write("Most similar:")
-for name, dist in similar[1:]:
-  st.image(f"data/VisDrone2019-DET-train/images/{name}", width=200)
-  st.write(f"distance: {dist:.2f}")
-
+cols = st.columns(3)
+for i, (name, dist) in enumerate(similar[1:]):
+  with cols[i % 3]:
+    st.image(f"data/VisDrone2019-DET-train/images/{name}", width=200)
+    st.write(f"distance: {dist:.2f}")

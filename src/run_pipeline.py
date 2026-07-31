@@ -1,7 +1,7 @@
 from src.s1_datascan.scan import scan_dataset
 from src.s2_statistics_data_mining.stats import build_stats_table, plot_distributions
 from src.s2_statistics_data_mining.outlier import zscore,zscore_outliers, isolation_forest_outliers
-from src.s5_storage.database import create_all_tables, stats_outliers_csv_to_database
+from src.s5_storage.database import create_all_tables, stats_outliers_csv_to_database, ingest_embeddings, ingest_clusters
 
 
 import pandas as pd
@@ -24,13 +24,11 @@ def pipeline():
   zs_if_outliers.to_csv("docs/outliers.csv", index=False)
 
 
-
-  #TODO step 3,4,
-
-
   print("ingest to Database")
   create_all_tables()
   stats_outliers_csv_to_database()
-
+  ingest_embeddings()
+  ingest_clusters()
+  
 if __name__ == "__main__":
   pipeline()
