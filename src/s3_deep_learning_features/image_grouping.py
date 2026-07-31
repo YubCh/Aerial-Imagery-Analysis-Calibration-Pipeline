@@ -31,7 +31,7 @@ def export_cluster_samples(cluster_ids, filenames, cluster_to_show, n=12):
 
 def find_similar(embs_index, embs, filenames, top_n=5):
   single_embedding = embs[embs_index]
-  distances = np.linalg.norm(embeddings - single_embedding, axis=1)
+  distances = np.linalg.norm(embs - single_embedding, axis=1)
   nearest = np.argsort(distances)[:top_n+1]
   res = []
   for i in nearest:
@@ -48,7 +48,7 @@ if __name__ == "__main__":
   results = find_similar(query_idx, embeddings, filenames)
   for fname, dist in results:
       print(f"{dist:.2f}  {fname}")
-
+  pd.DataFrame({"filename": filenames, "cluster": cluster_images(embeddings)}).to_csv("docs/clusters.csv", index=False)
 #picture seem not really correlating that much. TODO later different cluster or modl 
 # 0.00  0000076_00616_d_0000003.jpg
 # 14.11  0000313_04801_d_0000460.jpg
