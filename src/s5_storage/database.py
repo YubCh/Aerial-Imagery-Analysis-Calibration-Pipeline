@@ -46,18 +46,19 @@ def create_all_tables():
 
 def ingest_clusters():
   df_clust = pd.read_csv("docs/clusters.csv")
-  with engine.connect() as conn:
+  with engine.begin() as conn:
     existing = conn.execute(select(images.c.id, images.c.filename))
     filename_to_id = {}
     for img_id, filename in existing:
       filename_to_id[filename] = img_id
-    for _, row in df_clust:
-      image_id = filename_to_id[row["filenames"]]
+    for _, row in df_clust.iterrows():
+      image_id = filename_to_id[row["filename"]]
       cluster = row["cluster"]
       conn.execute(clusters.insert().values(
         image_id = image_id,
         cluster_id = cluster
       ))
+  print(f"ingested {len(df_clust)} embeddings in to clusters")
 
 def ingest_embeddings():
   df_emb = pd.read_csv("docs/embedding_filenames.csv")
@@ -73,6 +74,7 @@ def ingest_embeddings():
        npy_path = "docs/embeddings.npy",
        vector_index = i
       ))
+  print(f"ingested {len(df_emb)} embeddings")
 
 def stats_outliers_csv_to_database(stats_csv_path="docs/image_stats.csv",      outliers_csv_path = "docs/outliers.csv"):
   df_stats = pd.read_csv(stats_csv_path)
