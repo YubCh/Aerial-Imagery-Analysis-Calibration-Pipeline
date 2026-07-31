@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine, text
+import numpy as np
+from src.s3_deep_learning_features.image_grouping import find_similar
 
 engine = create_engine("sqlite:///pipeline.db")
 
@@ -44,3 +46,19 @@ with engine.connect() as conn:
 st.write("Brightness:", round(result[0], 2))
 st.write("Contrast:", round(result[1], 2))
 st.write("Blur-score:", round(result[2], 2))
+
+
+
+st.header("Find similar images")
+
+embeddings = np.load("docs/embeddings.npy")
+emb_filenames = pd.read_csv("docs/embedding_filenames.csv")["filename"].tolist()
+
+embs_index = emb_filenames.index(selected)
+similar = find_similar(embs_index, embeddings,emb_filenames, 5)
+
+st.write("Most similar:")
+for name, dist in similar[1:]:
+  st.image(f"data/VisDrone2019-DET-train/images/{name}", width=200)
+  st.write(f"distance: {dist:.2f}")
+
