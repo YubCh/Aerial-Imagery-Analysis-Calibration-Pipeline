@@ -1,6 +1,9 @@
 from sqlalchemy import Table, Column, create_engine, Table, Integer, Float, Text, ForeignKey, MetaData, text
 import pandas as pd
-
+from sqlalchemy import select
+import os
+if os.path.exists("pipeline.db"):
+    os.remove("pipeline.db")
 engine = create_engine("sqlite:///pipeline.db")
 metadata = MetaData()
 
@@ -26,12 +29,50 @@ outliers = Table("outliers", metadata,
   Column("score", Float)
   )
 
+embeddings = Table("embeddings", metadata,
+  Column("image_id", Integer, ForeignKey("images.id")),
+  Column("npy_path", Text),
+  Column("vector_index", Integer)
+  )
+
+
+clusters = Table("clusters", metadata,
+  Column("image_id", Integer, ForeignKey("images.id")),
+  Column("cluster_id", Integer))
 
 def create_all_tables():
   metadata.create_all(engine)
   print("tables created in pipeline.db")
 
+def ingest_clusters():
+  df_clust = pd.read_csv("docs/clusters.csv")
+  with engine.connect() as conn:
+    existing = conn.execute(select(images.c.id, images.c.filename))
+    filename_to_id = {}
+    for img_id, filename in existing:
+      filename_to_id[filename] = img_id
+    for _, row in df_clust:
+      image_id = filename_to_id[row["filenames"]]
+      cluster = row["cluster"]
+      conn.execute(clusters.insert().values(
+        image_id = image_id,
+        cluster_id = cluster
+      ))
 
+def ingest_embeddings():
+  df_emb = pd.read_csv("docs/embedding_filenames.csv")
+  with engine.begin() as connection:
+    existing = connection.execute(select(images.c.id, images.c.filename))
+    filename_to_id = {}
+    for img_id, filename in existing:
+      filename_to_id[filename] = img_id
+    for i, row in df_emb.iterrows():
+      image_id = filename_to_id[row["filename"]]
+      connection.execute(embeddings.insert().values(
+       image_id = image_id,
+       npy_path = "docs/embeddings.npy",
+       vector_index = i
+      ))
 
 def stats_outliers_csv_to_database(stats_csv_path="docs/image_stats.csv",      outliers_csv_path = "docs/outliers.csv"):
   df_stats = pd.read_csv(stats_csv_path)
@@ -103,3 +144,7 @@ def run_example_queries():
 """))
     for row in zscore_ironforest_outlier:
       print(row)
+
+
+if __name__ == "__main__":
+    run_example_queries()
