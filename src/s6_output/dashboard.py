@@ -3,6 +3,8 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 import numpy as np
 from src.s3_deep_learning_features.image_grouping import find_similar
+from src.s4_calibration.image_correction import normalize_exposure
+import cv2
 
 engine = create_engine("sqlite:///pipeline.db")
 
@@ -69,9 +71,28 @@ embs_index = emb_filenames.index(selected)
 similar = find_similar(embs_index, embeddings,emb_filenames, 6)
 
 
+
+st.write("Model resnet18 used with IMAGENET1K_V1 weights.")
+st.write("Similar images clustered with kmeans algorithm.")
 st.write("Most similar:")
 cols = st.columns(3)
 for i, (name, dist) in enumerate(similar[1:]):
   with cols[i % 3]:
     st.image(f"data/VisDrone2019-DET-train/images/{name}", width=200)
     st.write(f"distance: {dist:.2f}")
+
+st.header("Callibration: normalize exposure")
+img = cv2.imread(f"data/VisDrone2019-DET-train/images/{selected}")
+corrected = normalize_exposure(img)
+
+img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+corrected_rgb = cv2.cvtColor(corrected, cv2.COLOR_BGR2RGB)
+
+col1, col2 = st.columns(2)
+with col1:
+  st.write("Original")
+  st.image(img_rgb, width=300)
+
+with col2:
+  st.write("Exposure normalized")
+  st.image(corrected_rgb, width=300)
