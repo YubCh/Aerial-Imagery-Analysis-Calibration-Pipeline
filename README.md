@@ -2,31 +2,34 @@
 
 This Project is a simple data-analysis pipeline for aerial drone imagery. It ingests a dataset of aerial images, computes statistical metrics, detects anomalies, goes through deep learning feature, groups and searches images by visual similarities, normalizes exposures and finally presents the output in a dashboard.
 
-Built on the VisDrone aerial imagery dataset(around 6500 images)
+Built on the VisDrone aerial imagery dataset(6471 images)
 
 
 # What it does
--Statistical analysis & data mining: computes brightness, contrast, and blur metrics per image. Detects anomalies in images using z-score with Isolation Forest.
+- Statistical analysis & data mining: computes brightness, contrast, and blur metrics per image. Detects anomalies in images using z-score with Isolation Forest.
 
--Deep-learning features: we attract 512-dimensional embeddings from every image using the pretrained model: ResNet18 with IMAGENET1K_V1 as weight. While ignorning the final layer of resnet18
+- Deep-learning features: we attract 512-dimensional embeddings from every image using the pretrained model: ResNet18 with IMAGENET1K_V1 as weight. While ignorning the final layer of resnet18
 
--Clustering & similarity search: groups embedded images into n clusters using the kmeans algorithm to find visually similar images
+- Clustering & similarity search: groups embedded images into n clusters using the kmeans algorithm to find visually similar images
 
--Camera & image calibration: corrects lens distortion (checkboard calibration - still working on it[ ]) and normalizes uneven exposures with the CLAHE image processing aglorithm
+- Camera & image calibration: corrects lens distortion (checkboard calibration - still working on it[ ]) and normalizes uneven exposures with the CLAHE image processing aglorithm
 
--Database & Dashboard: stores all results in SQLite database and presents them through a Streamlit dashboard
+- Database & Dashboard: stores all results in SQLite database and presents them through a Streamlit dashboard
 
 # Architecture
 The pipeline is organized into 6stages, with data flowing from [S1] ingestion through [S2 - S4] analysis into [S5] storage and [S6] presentation
 
-                                
-Raw Images -> [S1] Ingestion -> [S2 - S4] Deep learning, Statistic, Calibration / -> [S5] Database -> [S6] Dashboard
-                                
+```text
+                                [S2] Statistic     
+Raw Images -> [S1] Ingestion -> [S3] Deep Learning -> [S5] Database -> [S6] Dashboard
+                                [S4] Calibration
+```                                
 
 # Key Results
 
 Computed statistics of all 6471 images:
 stats:
+```text
              width       height   brightness     contrast   blur_score
 count  6471.000000  6471.000000  6471.000000  6471.000000  6471.000000
 mean   1519.889507  1002.397002    95.671978    46.679768   869.646464
@@ -36,6 +39,7 @@ min     480.000000   360.000000     2.080572     4.364025     3.842206
 50%    1400.000000  1050.000000   102.814884    46.390540   709.658049
 75%    1916.000000  1078.000000   117.096623    55.207880  1249.778823
 max    2000.000000  1500.000000   222.629989    89.833314  5541.826009
+```
 ![Brightness distribution across dataset](docs/distribution_brightness.png) ![Contrast distribution across dataset](docs/distribution_contrast.png) ![Blur Score distribution across dataset](docs/distribution_blur_score.png)
 
 Outliers: 
@@ -54,7 +58,7 @@ Python, OpenCV, Pytorch(ResNet18), scikit-learn, pandas, NumPy, SQLAlchemy + SQL
 
 
 # Project Structure
-
+```text
 docs/                           
 src/
   s1_datascan/                  scanning
@@ -64,7 +68,7 @@ src/
   s5_storage                    database, ingestion
   s6_output                     dashboard
 /run_pipeline.py                runs full pipeline
-
+```
 
 
 # How to Run
