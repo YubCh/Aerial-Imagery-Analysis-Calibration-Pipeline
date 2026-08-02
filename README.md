@@ -12,7 +12,7 @@ Built on the VisDrone aerial imagery dataset(6471 images)
 
 - Clustering & similarity search: groups embedded images into n clusters using the kmeans algorithm to find visually similar images.
 
-- Camera & image calibration: corrects lens distortion (checkboard calibration - still working on it[ ]) and normalizes uneven exposures with the CLAHE image processing aglorithm.
+- Camera & image calibration: corrects lens distortion (checkboard calibration - still working on) and normalizes uneven exposures with the CLAHE image processing aglorithm.
 
 - Database & Dashboard: stores all results in SQLite database and presents them through a Streamlit dashboard.
 
@@ -55,18 +55,14 @@ max     222.629989    89.833314  5541.826009
 
 Outliers: 
   from 6471 images we have total 187 outliers. 
-  122 detected in zscore and 65 detected in Isolation Forest.
-  While in zscore 19 detected in brightness, 18 in contrast and 85 in blur score.
+  122 detected in z-score and 65 detected in Isolation Forest.
+  While in z-score 19 detected in brightness, 18 in contrast and 85 in blur score.
 
 Clusters size:
-  extracted embeddings have each a length of 512 for the full dataset; kmeans produces n_cluster for randomstate 42. We chose n=8 well distributed visuals clusters with size ranging from 658 - 1059.
+  extracted embeddings have each a length of 512 for the full dataset, kmeans produces n_cluster for randomstate 42. We chose n=8 well distributed visual clusters with size ranging from 658 - 1059.
 
 Calibration result:
   exposure normalization CLAHE reduced lightting induced embedding drift by around 11% on average, consistent in 894 of 1000 tests.
- 
-# Tech Stack
-Python, OpenCV, Pytorch(ResNet18), scikit-learn, pandas, NumPy, SQLAlchemy + SQLite, Streamlit
-
 
 # Project Structure
 ```text
@@ -81,6 +77,10 @@ src/
 /run_pipeline.py                runs full pipeline
 ```
 
+# Streamlit Dashboard
+![Brightness distribution](assets/streamlit1.png)
+![Brightness distribution](assets/streamlit2.png)
+![Brightness distribution](assets/streamlit3.png)
 
 # How to Run
 
@@ -90,7 +90,6 @@ src/
 python3 -m venv .venv
 source .venv/bin/active
 pip install -r requirements.txt
-
 
 #2.
   # 1. Download the VisDrone2019-DET training set from:
@@ -108,6 +107,10 @@ python -m src.run_pipeline
 #5. launch dashboard
 python -m streamlit run src/s6_output/dashboard.py
 ``` 
+
+
+# Tech Stack
+Python, OpenCV, Pytorch(ResNet-18), scikit-learn, pandas, NumPy, SQLAlchemy + SQLite, Streamlit
 
 
 ## Data sources & acknowledgements
