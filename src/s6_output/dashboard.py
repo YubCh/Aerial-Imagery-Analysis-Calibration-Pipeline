@@ -44,8 +44,8 @@ with engine.connect() as conn:
     WHERE i.filename = :files"""), {"files": selected}).fetchone()
 
 st.write("Brightness:", round(result[0], 2) , " / ", 255)
-st.write("Contrast:", round(result[1], 2), "  ", "mean: 46.7, max: 89.8") #
-st.write("Blur-score:", round(result[2], 2), " ", "mean: 869.6, max: 5541.8")
+st.write("Contrast:", round(result[1], 2), "  ", "mean: ",46.7, "max: ",89.8) #
+st.write("Blur-score:", round(result[2], 2), " ", "mean: ", 869.6,"max: ", 5541.8)
 
 with engine.connect() as conn:
   outlier_rows = conn.execute(text("""
@@ -59,7 +59,7 @@ with engine.connect() as conn:
   if outlier_rows:
     st.write("Flagged as outlier by:")
     for method, metric, score in outlier_rows:
-      st.write(f" -{method} ({metric}), score {score:.2f}")
+      st.write(" - ",method, ": ",metric," score: ",score)
   else:
     st.write("Not flagged as outlier")
   st.write("Outlier example: 0000040_02454_d_0000068.jpg ")
@@ -74,7 +74,7 @@ similar = find_similar(embs_index, embeddings,emb_filenames, 6)
 
 
 
-st.write("Model resnet18 used with IMAGENET1K_V1 weights.")
+st.write("Model ResNet-18 used with IMAGENET1K_V1 weights.")
 st.write("Similar images clustered with kmeans algorithm.")
 st.write("Most similar:")
 cols = st.columns(3)
@@ -83,7 +83,7 @@ for i, (name, dist) in enumerate(similar[1:]):
     st.image(f"data/VisDrone2019-DET-train/images/{name}", width=200)
     st.write(f"distance: {dist:.2f}")
 
-st.header("Callibration: normalize exposure")
+st.header("Calibration: normalize exposure")
 img = cv2.imread(f"data/VisDrone2019-DET-train/images/{selected}")
 corrected = normalize_exposure(img)
 
