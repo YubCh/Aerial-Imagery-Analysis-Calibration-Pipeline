@@ -59,7 +59,7 @@ with engine.connect() as conn:
   if outlier_rows:
     st.write("Flagged as outlier by:")
     for method, metric, score in outlier_rows:
-      st.write(" - ",method, ": ",metric," score: ",score)
+      st.write(" - ",method, ": ",metric," score: ",format(score, ".2f"))
   else:
     st.write("Not flagged as outlier")
   st.write("Outlier example: 0000040_02454_d_0000068.jpg ")
