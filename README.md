@@ -28,7 +28,7 @@ Raw Images -> [S1] Ingestion -> [S3] Deep Learning -> [S5] Database -> [S6] Dash
 # Key Results
 
 Computed statistics of all 6471 images:
-stats:
+- Statistics:
 ```text
         brightness     contrast   blur_score
 count  6471.000000  6471.000000  6471.000000
@@ -53,16 +53,17 @@ max     222.629989    89.833314  5541.826009
   </tr>
 </table>
 
-Outliers: 
-  from 6471 images we have total 187 outliers. 
-  122 detected in z-score and 65 detected in Isolation Forest.
-  While in z-score 19 detected in brightness, 18 in contrast and 85 in blur score.
+- Outliers:  
+  from 6471 images we have total 187 outliers.  
+  122 detected in z-score and 65 detected in Isolation Forest.    
+  While in z-score 19 detected in brightness, 18 in contrast and 85 in blur score.    
 
-Clusters size:
-  extracted embeddings have each a length of 512 for the full dataset, kmeans produces n_cluster for randomstate 42. We chose n=8 well distributed visual clusters with size ranging from 658 - 1059.
+- Clusters size:  
+  extracted embeddings have each a length of 512 for the full dataset, kmeans produces n_cluster for randomstate 42.   
+  We chose n=8 well distributed visual clusters with size ranging from 658 - 1059.  
 
-Calibration result:
-  exposure normalization CLAHE reduced lightting induced embedding drift by around 11% on average, consistent in 894 of 1000 tests.
+- Calibration result:  
+  exposure normalization CLAHE reduced lightting induced embedding drift by around 11% on average, consistent in 894 of 1000 tests.  
 
 # Project Structure
 ```text
