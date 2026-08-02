@@ -43,9 +43,10 @@ with engine.connect() as conn:
     JOIN images i ON i.id == s.image_id
     WHERE i.filename = :files"""), {"files": selected}).fetchone()
 
-st.write("Brightness:", round(result[0], 2))
-st.write("Contrast:", round(result[1], 2))
-st.write("Blur-score:", round(result[2], 2))
+st.write("Brightness:", round(result[0], 2) , " / ", 255)
+st.write("Contrast:", round(result[1], 2), "  ", "mean: 46.7, max: 89.8") #
+st.write("Blur-score:", round(result[2], 2), " ", "mean: 869.6, max: 5541.8")
+
 with engine.connect() as conn:
   outlier_rows = conn.execute(text("""
     SELECT o.method, o.metric, o.score
@@ -54,6 +55,7 @@ with engine.connect() as conn:
     WHERE i.filename =:files
 """), {"files": selected}).fetchall()
 
+#(flagged above 3.0)
   if outlier_rows:
     st.write("Flagged as outlier by:")
     for method, metric, score in outlier_rows:
