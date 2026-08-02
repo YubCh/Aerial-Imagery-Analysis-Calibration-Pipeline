@@ -40,7 +40,18 @@ min     480.000000   360.000000     2.080572     4.364025     3.842206
 75%    1916.000000  1078.000000   117.096623    55.207880  1249.778823
 max    2000.000000  1500.000000   222.629989    89.833314  5541.826009
 ```
-![Brightness distribution across dataset](assets/distribution_brightness.png) ![Contrast distribution across dataset](assets/distribution_contrast.png) ![Blur Score distribution across dataset](assets/distribution_blur_score.png)
+<table>
+  <tr>
+    <td><img src="assets/distribution_brightness.png" width="250"></td>
+    <td><img src="assets/distribution_contrast.png" width="250"></td>
+    <td><img src="assets/distribution_blur_score.png" width="250"></td>
+  </tr>
+  <tr>
+    <td align="center">Brightness</td>
+    <td align="center">Contrast</td>
+    <td align="center">Blur score</td>
+  </tr>
+</table>
 
 Outliers: 
   from 6471 images we have total 187 outliers. 
