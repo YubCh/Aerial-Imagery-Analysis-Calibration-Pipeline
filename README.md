@@ -8,13 +8,13 @@ Built on the VisDrone aerial imagery dataset(6471 images)
 # What it does
 - Statistical analysis & data mining: computes brightness, contrast, and blur metrics per image. Detects anomalies in images using z-score with Isolation Forest.
 
-- Deep-learning features: we attract 512-dimensional embeddings from every image using the pretrained model: ResNet18 with IMAGENET1K_V1 as weight. While ignorning the final layer of resnet18
+- Deep-learning features: we attract 512-dimensional embeddings from every image using the pretrained model: ResNet-18 with IMAGENET1K_V1 as weight. While ignorning the final layer of ResNet-18.
 
-- Clustering & similarity search: groups embedded images into n clusters using the kmeans algorithm to find visually similar images
+- Clustering & similarity search: groups embedded images into n clusters using the kmeans algorithm to find visually similar images.
 
-- Camera & image calibration: corrects lens distortion (checkboard calibration - still working on it[ ]) and normalizes uneven exposures with the CLAHE image processing aglorithm
+- Camera & image calibration: corrects lens distortion (checkboard calibration - still working on it[ ]) and normalizes uneven exposures with the CLAHE image processing aglorithm.
 
-- Database & Dashboard: stores all results in SQLite database and presents them through a Streamlit dashboard
+- Database & Dashboard: stores all results in SQLite database and presents them through a Streamlit dashboard.
 
 # Architecture
 The pipeline is organized into 6stages, with data flowing from [S1] ingestion through [S2 - S4] analysis into [S5] storage and [S6] presentation
@@ -55,14 +55,14 @@ max     222.629989    89.833314  5541.826009
 
 Outliers: 
   from 6471 images we have total 187 outliers. 
-  122 detected in zscore and 65 detected in ironforest.
+  122 detected in zscore and 65 detected in Isolation Forest.
   While in zscore 19 detected in brightness, 18 in contrast and 85 in blur score.
 
 Clusters size:
-  extracted embeddings have each a length of 512 for the full dataset; kmeans produces n_cluster for randomstate 42. We chose n=8 well distributed visuals clusters with size ranging from 658 - 1059
+  extracted embeddings have each a length of 512 for the full dataset; kmeans produces n_cluster for randomstate 42. We chose n=8 well distributed visuals clusters with size ranging from 658 - 1059.
 
 Calibration result:
-  exposure normalization CLAHE reduced lightting induced embedding drift by around 11% on average, consistent in 894 of 1000 tests
+  exposure normalization CLAHE reduced lightting induced embedding drift by around 11% on average, consistent in 894 of 1000 tests.
  
 # Tech Stack
 Python, OpenCV, Pytorch(ResNet18), scikit-learn, pandas, NumPy, SQLAlchemy + SQLite, Streamlit
